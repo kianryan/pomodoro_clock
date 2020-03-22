@@ -2,6 +2,7 @@
 #include "RTClib.h"
 #include "PomoTimer.h"
 #include "TiltSwitch.h"
+#include "EasingButton.h"
 
 RTC_DS1307 rtc;
 LedControl lc = LedControl(12, 11, 10, 1);
@@ -10,6 +11,7 @@ int timers[] = {300, 100};
 
 PomoTimer timer(&rtc);
 TiltSwitch tiltSwitch(2);
+EasingButton increaseButton(3, 5);
 
 int direction;
 
@@ -39,6 +41,12 @@ void setup() {
 }
 
 void loop() {
+
+    increaseButton.update();
+    int change = increaseButton.getChange();
+    if (change != 0) {
+        timer.updateResetTimer((timers[direction] += change));
+    }
 
     tiltSwitch.update();
     int newDirection = tiltSwitch.getState();
