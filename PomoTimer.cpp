@@ -19,6 +19,10 @@ void PomoTimer::stop() {
     Serial.print("Stopped timing.");
 }
 
+void PomoTimer::updateResetTimer(int declaredResetValue) {
+    resetValue = declaredResetValue;
+}
+
 // If the timer is within the boundaries
 // and still running, returns the current
 // time remaining.  Otherwise, returns -1.

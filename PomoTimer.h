@@ -21,6 +21,9 @@ class PomoTimer {
         // been reached.
         void stop();
 
+        // Update the reset value to the declaredResetValue.
+        void updateResetTimer(int declaredResetValue);
+
         // If the timer is within the boundaries
         // and still running, returns the current
         // time remaining.  Otherwise, returns -1.
