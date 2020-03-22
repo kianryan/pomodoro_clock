@@ -1,15 +1,13 @@
 #include "PomoTimer.h"
 #include "RTClib.h"
 
-PomoTimer::PomoTimer(int declaredResetValue) {
-    resetValue = declaredResetValue;
-}
-
-void PomoTimer::setClock(RTC_DS1307* clock) {
+PomoTimer::PomoTimer(RTC_DS1307* clock) {
     rtc = clock;
 }
 
-void PomoTimer::start() {
+void PomoTimer::start(int declaredResetValue) {
+    resetValue = declaredResetValue;
+
     running = true;
     startedTime = rtc->now();
     Serial.print("Started timing at:");

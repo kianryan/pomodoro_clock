@@ -11,12 +11,14 @@ class PomoTimer {
         RTC_DS1307* rtc;
 
     public:
-        PomoTimer(int declaredResetValue);
+        PomoTimer(RTC_DS1307* clock);
 
-        void setClock(RTC_DS1307* clock);
+        // Start tht timer counting down to the
+        // reset resetValue.
+        void start(int declaredResetValue);
 
-        void start();
-
+        // Stop the clock before the timer has
+        // been reached.
         void stop();
 
         // If the timer is within the boundaries
