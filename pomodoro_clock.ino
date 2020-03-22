@@ -12,6 +12,7 @@ int timers[] = {300, 100};
 PomoTimer timer(&rtc);
 TiltSwitch tiltSwitch(2);
 EasingButton increaseButton(3, 5);
+EasingButton decreaseButton(4, 5);
 
 int direction;
 
@@ -46,6 +47,12 @@ void loop() {
     int change = increaseButton.getChange();
     if (change != 0) {
         timer.updateResetTimer((timers[direction] += change));
+    }
+
+    decreaseButton.update();
+    change = decreaseButton.getChange();
+    if (change != 0) {
+        timer.updateResetTimer((timers[direction] -= change));
     }
 
     tiltSwitch.update();
