@@ -5,18 +5,24 @@ PomoTimer::PomoTimer(RTC_DS1307* clock) {
     rtc = clock;
 }
 
-void PomoTimer::start(int declaredResetValue) {
+void PomoTimer::reset(int declaredResetValue) {
     resetValue = declaredResetValue;
 
+    remaining = TimeSpan(resetValue);
+}
+
+void PomoTimer::start() {
     running = true;
-    startedTime = rtc->now();
-    Serial.print("Started timing at:");
-    Serial.println(startedTime.unixtime());
+    previous = rtc->now();
+    time();
 }
 
 void PomoTimer::stop() {
     running = false;
-    Serial.print("Stopped timing.");
+}
+
+void PomoTimer::startStop() {
+    running = !running;
 }
 
 void PomoTimer::updateResetTimer(int declaredResetValue) {
@@ -29,13 +35,17 @@ void PomoTimer::updateResetTimer(int declaredResetValue) {
 TimeSpan PomoTimer::time() {
     if (running)
     {
+        DateTime current = rtc->now();
+
         // If still running, determine if we
         // should still be running.
-        TimeSpan interval = rtc->now() - startedTime;
-        if (interval.totalseconds() > resetValue) {
+        TimeSpan interval = current - previous;
+        remaining = remaining - interval;
+        if (remaining.totalseconds() <= 0) {
             running = false;
         } else {
-            return TimeSpan(resetValue) - interval;
+            previous = current;
+            return remaining;
         }
     }
 

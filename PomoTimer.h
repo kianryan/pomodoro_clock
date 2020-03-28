@@ -6,7 +6,8 @@
 class PomoTimer {
     private:
         int resetValue;
-        DateTime startedTime;
+        TimeSpan remaining;
+        DateTime previous;
         bool running;
         RTC_DS1307* rtc;
 
@@ -15,11 +16,18 @@ class PomoTimer {
 
         // Start tht timer counting down to the
         // reset resetValue.
-        void start(int declaredResetValue);
+        void reset(int declaredResetValue);
+
+        // Start the clock from a stopped state.
+        // Has no effect if already started.
+        void start();
 
         // Stop the clock before the timer has
         // been reached.
         void stop();
+
+        // Toggle the current running state.
+        void startStop();
 
         // Update the reset value to the declaredResetValue.
         void updateResetTimer(int declaredResetValue);

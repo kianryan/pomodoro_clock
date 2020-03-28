@@ -38,29 +38,33 @@ void setup() {
    delay(1000);
 
    direction = tiltSwitch.getState(); // Get an inital direction.
-   timer.start(timers[direction]);    // Start timer.
+   timer.reset(timers[direction]);
+   timer.start();
 }
 
 void loop() {
 
     increaseButton.update();
-    int change = increaseButton.getChange();
-    if (change != 0) {
-        timer.updateResetTimer((timers[direction] += change));
-    }
-
     decreaseButton.update();
-    change = decreaseButton.getChange();
-    if (change != 0) {
-        timer.updateResetTimer((timers[direction] -= change));
-    }
+    int buttonChange[2];
+    buttonChange[0] = increaseButton.getChange();
+    buttonChange[1] = decreaseButton.getChange();
 
-    tiltSwitch.update();
-    int newDirection = tiltSwitch.getState();
-    if (direction != newDirection) {
-        // We're going to be changing direction.
-        direction = newDirection;
-        timer.start(timers[direction]);
+    if (buttonChange[0] != 0 && buttonChange[1] != 0) {
+        // Start/stop timer.
+        timer.startStop();
+    } else {
+        // Otherwise, we're concerned with increasing
+        // or decreasing timer values.
+        if (buttonChange[0] != 0)
+        {
+            timer.updateResetTimer((timers[direction] += buttonChange[0]));
+        }
+
+        if (buttonChange[1] != 0)
+        {
+            timer.updateResetTimer((timers[direction] -= buttonChange[1]));
+        }
     }
 
     TimeSpan interval = timer.time();
