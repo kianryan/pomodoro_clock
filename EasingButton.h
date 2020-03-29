@@ -35,7 +35,7 @@ class EasingButton {
         // Pin to read from.
         // Held at pull up high.  lChange represents the
         // value to return for long held depresses.
-        EasingButton(int pin, int lChange);
+        EasingButton(int inputPin, int longChange);
 
         // Get the current switch state
         // HIGH (off), LOW (on), REALLY_LOW (long held)

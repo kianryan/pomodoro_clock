@@ -1,8 +1,7 @@
 #include "EasingButton.h"
 
-EasingButton::EasingButton(int pin, int lChange) {
-    inputPin = pin;
-    longChange = lChange;
+EasingButton::EasingButton(int inputPin, int longChange)
+    : inputPin{inputPin}, longChange{longChange}  {
 
     pinMode(inputPin, INPUT);
     digitalWrite(inputPin, HIGH);
