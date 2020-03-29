@@ -20,10 +20,8 @@ class TiltSwitch {
         long time = 0;         // the last time the output pin was toggled
         long debounce = 1000;   // the debounce time, increase if the output flickers
 
-
-
     public:
-        TiltSwitch(int pin);
+        TiltSwitch(int switchPin);
 
         // Return if the tilt sensor
         // is currently pointing up.

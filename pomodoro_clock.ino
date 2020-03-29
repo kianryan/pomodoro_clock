@@ -44,13 +44,19 @@ void setup() {
 
 void loop() {
 
+    tiltSwitch.update();
     buttonManager.update();
 
+    // check the tilt state.
+    int newDirection = tiltSwitch.getState();
+    if (direction != newDirection) {
+        direction = newDirection;
+        timer.reset(timers[direction]);
+        timer.start();
+    }
+
+    // check the button state.
     int state = buttonManager.getState();
-
-    Serial.print("Button state:");
-    Serial.println(state);
-
     switch (state) {
         case NO_BUTTON:
             // Nothing to do here.
@@ -62,30 +68,6 @@ void loop() {
             timer.changeTime(buttonManager.getChange());
             break;
     }
-
-
-    // increaseButton.update();
-    // decreaseButton.update();
-    // int buttonChange[2];
-    // buttonChange[0] = increaseButton.getChange();
-    // buttonChange[1] = decreaseButton.getChange();
-
-    // if (buttonChange[0] != 0 && buttonChange[1] != 0) {
-    //     // Start/stop timer.
-    //     timer.startStop();
-    // } else {
-    //     // Otherwise, we're concerned with increasing
-    //     // or decreasing timer values.
-    //     if (buttonChange[0] != 0)
-    //     {
-    //         timer.updateResetTimer((timers[direction] += buttonChange[0]));
-    //     }
-
-    //     if (buttonChange[1] != 0)
-    //     {
-    //         timer.updateResetTimer((timers[direction] -= buttonChange[1]));
-    //     }
-    // }
 
     TimeSpan interval = timer.time();
     int32_t totalseconds = interval.totalseconds();

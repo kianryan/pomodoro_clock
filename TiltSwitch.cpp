@@ -1,7 +1,7 @@
 #include "TiltSwitch.h"
 
-TiltSwitch::TiltSwitch(int pin) {
-    switchPin = pin;
+TiltSwitch::TiltSwitch(int switchPin)
+    : switchPin { switchPin } {
 
   pinMode(switchPin, INPUT);
   digitalWrite(switchPin, HIGH);   // turn on the built in pull-up resistor
