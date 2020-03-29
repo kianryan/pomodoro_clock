@@ -19,7 +19,7 @@ class ButtonManager {
         // Declare up button and down buttons
         ButtonManager(int upPin, int downPin, int lChange);
 
-        // Destructor.
+        // Destructor
         ~ButtonManager();
 
         // Update the current button state
