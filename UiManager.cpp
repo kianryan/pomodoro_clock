@@ -1,7 +1,8 @@
 #include "UiManager.h"
 
-UiManager::UiManager(int dataPin, int clkPin, int csPin) {
-     lc = new LedControl(dataPin, clkPin, csPin);
+UiManager::UiManager(int dataPin, int clkPin, int csPin, int piezoPin)
+     : piezoPin{piezoPin} {
+     lc = new LedControl(dataPin, clkPin, csPin, piezoPin);
 }
 
 UiManager::~UiManager() {
@@ -45,4 +46,13 @@ void UiManager::display(int totalSeconds) {
 
     lc->setDigit(0, 2, (byte)tens, false);
     lc->setDigit(0, 3, (byte)ones, false);
+}
+
+void UiManager::alarm() {
+
+    /* Alarm will sound for three seconds, in 250ms bursts. */
+    if (toggleTone) {
+        tone(piezoPin, 262);
+    }
+    toggleTone = ! toggleTone;
 }

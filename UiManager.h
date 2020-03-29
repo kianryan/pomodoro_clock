@@ -7,10 +7,10 @@ class UiManager {
 
     private:
         LedControl* lc;
-
-
+        int piezoPin;
+        bool toggleTone;
     public:
-        UiManager(int dataPin, int clkPin, int csPin);
+        UiManager(int dataPin, int clkPin, int csPin, int piezoPin);
 
         ~UiManager();
 
@@ -19,6 +19,8 @@ class UiManager {
         void clearDisplay();
 
         void display(int totalSeconds);
+
+        void alarm();
 };
 
 #endif // UiManager.h

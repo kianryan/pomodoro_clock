@@ -9,18 +9,20 @@
 RTC_DS1307 rtc;
 // LedControl lc = LedControl(12, 11, 10, 1);
 
-int timers[] = {300, 100};
+int timers[] = {300, 10};
 
 PomoTimer timer(&rtc);
 TiltSwitch tiltSwitch(2);
 ButtonManager buttonManager(3, 4, 5);
-UiManager uiManager(12, 11, 10);
+UiManager uiManager(12, 11, 10, A3);
 
 int direction;
 
 bool preflight;
 DateTime preflightTime;
 bool preflightDisplayState;
+
+bool alarmSilenced;
 
 
 void setup() {
@@ -36,9 +38,7 @@ void setup() {
    delay(1000);
 
    direction = tiltSwitch.getState(); // Get an inital direction.
-   timer.reset(timers[direction]);
-   preflight = true;
-   preflightTime = rtc.now();
+   startPreFlight();
 }
 
 void loop() {
@@ -50,18 +50,22 @@ void loop() {
     int newDirection = tiltSwitch.getState();
     if (direction != newDirection) {
         direction = newDirection;
-        timer.reset(timers[direction]);
 
-        preflight = true;
-        preflightTime = rtc.now();
+        startPreFlight();
     }
 
     if (preflight) {
+
+        /*
+         * If in pre-flight, allow the user to adjust the global reset
+         * time, before time timer starts.  The user has three seconds to
+         * to this before the user timer starts.
+        */
+
         int interval = (rtc.now() - preflightTime).totalseconds();
         Serial.print("Preflight time:");
         Serial.println(interval);
 
-        /* We're only in pre-flight for ~5 seconds. */
         if (interval > 3) {
             preflight = false;
             timer.start();
@@ -103,12 +107,30 @@ void loop() {
         // Get the time from the timer and display.
         TimeSpan interval = timer.time();
         int32_t totalseconds = interval.totalseconds();
-        if (totalseconds >= 0) {
-            uiManager.display(totalseconds);
+
+        uiManager.display(totalseconds);
+
+        if (totalseconds <= 0) {
+            Serial.println("SOUND ALARM");
+
+            /* Replace this with any buttons? */
+            if (buttonManager.getState() != NO_BUTTON) {
+                alarmSilenced = true;
+            }
+
+            if (!alarmSilenced) {
+                uiManager.alarm();
+            }
         }
-    }
+   }
 
     delay(250);
+}
 
+void startPreFlight() {
+    timer.reset(timers[direction]);
+    preflight = true;
+    preflightTime = rtc.now();
+    alarmSilenced = false;
 }
 
