@@ -25,8 +25,8 @@ void PomoTimer::startStop() {
     running = !running;
 }
 
-void PomoTimer::updateResetTimer(int declaredResetValue) {
-    resetValue = declaredResetValue;
+void PomoTimer::changeTime(int seconds) {
+    remaining = remaining + TimeSpan(seconds);
 }
 
 // If the timer is within the boundaries

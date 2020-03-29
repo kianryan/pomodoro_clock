@@ -3,6 +3,7 @@
 #include "PomoTimer.h"
 #include "TiltSwitch.h"
 #include "EasingButton.h"
+#include "ButtonManager.h"
 
 RTC_DS1307 rtc;
 LedControl lc = LedControl(12, 11, 10, 1);
@@ -11,8 +12,7 @@ int timers[] = {300, 100};
 
 PomoTimer timer(&rtc);
 TiltSwitch tiltSwitch(2);
-EasingButton increaseButton(3, 5);
-EasingButton decreaseButton(4, 5);
+ButtonManager buttonManager(3, 4, 5);
 
 int direction;
 
@@ -44,28 +44,48 @@ void setup() {
 
 void loop() {
 
-    increaseButton.update();
-    decreaseButton.update();
-    int buttonChange[2];
-    buttonChange[0] = increaseButton.getChange();
-    buttonChange[1] = decreaseButton.getChange();
+    buttonManager.update();
 
-    if (buttonChange[0] != 0 && buttonChange[1] != 0) {
-        // Start/stop timer.
-        timer.startStop();
-    } else {
-        // Otherwise, we're concerned with increasing
-        // or decreasing timer values.
-        if (buttonChange[0] != 0)
-        {
-            timer.updateResetTimer((timers[direction] += buttonChange[0]));
-        }
+    int state = buttonManager.getState();
 
-        if (buttonChange[1] != 0)
-        {
-            timer.updateResetTimer((timers[direction] -= buttonChange[1]));
-        }
+    Serial.print("Button state:");
+    Serial.println(state);
+
+    switch (state) {
+        case NO_BUTTON:
+            // Nothing to do here.
+            break;
+        case TOGGLE_TIMER:
+            timer.startStop();
+            break;
+        case CHANGE_TIMER:
+            timer.changeTime(buttonManager.getChange());
+            break;
     }
+
+
+    // increaseButton.update();
+    // decreaseButton.update();
+    // int buttonChange[2];
+    // buttonChange[0] = increaseButton.getChange();
+    // buttonChange[1] = decreaseButton.getChange();
+
+    // if (buttonChange[0] != 0 && buttonChange[1] != 0) {
+    //     // Start/stop timer.
+    //     timer.startStop();
+    // } else {
+    //     // Otherwise, we're concerned with increasing
+    //     // or decreasing timer values.
+    //     if (buttonChange[0] != 0)
+    //     {
+    //         timer.updateResetTimer((timers[direction] += buttonChange[0]));
+    //     }
+
+    //     if (buttonChange[1] != 0)
+    //     {
+    //         timer.updateResetTimer((timers[direction] -= buttonChange[1]));
+    //     }
+    // }
 
     TimeSpan interval = timer.time();
     int32_t totalseconds = interval.totalseconds();

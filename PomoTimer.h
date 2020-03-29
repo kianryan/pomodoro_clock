@@ -29,8 +29,8 @@ class PomoTimer {
         // Toggle the current running state.
         void startStop();
 
-        // Update the reset value to the declaredResetValue.
-        void updateResetTimer(int declaredResetValue);
+        // Change the timer by the given number of seconds.
+        void changeTime(int changeSeconds);
 
         // If the timer is within the boundaries
         // and still running, returns the current
