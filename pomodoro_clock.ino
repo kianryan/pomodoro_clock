@@ -18,6 +18,11 @@ UiManager uiManager(12, 11, 10);
 
 int direction;
 
+bool preflight;
+DateTime preflightTime;
+bool preflightDisplayState;
+
+
 void setup() {
 
    // Serial for debugging
@@ -32,7 +37,8 @@ void setup() {
 
    direction = tiltSwitch.getState(); // Get an inital direction.
    timer.reset(timers[direction]);
-   timer.start();
+   preflight = true;
+   preflightTime = rtc.now();
 }
 
 void loop() {
@@ -40,34 +46,66 @@ void loop() {
     tiltSwitch.update();
     buttonManager.update();
 
-    // check the tilt state.
+    // On a change in tilt state,
     int newDirection = tiltSwitch.getState();
     if (direction != newDirection) {
         direction = newDirection;
         timer.reset(timers[direction]);
-        timer.start();
+
+        preflight = true;
+        preflightTime = rtc.now();
     }
 
-    // check the button state.
-    int state = buttonManager.getState();
+    if (preflight) {
+        int interval = (rtc.now() - preflightTime).totalseconds();
+        Serial.print("Preflight time:");
+        Serial.println(interval);
 
-    switch (state) {
-        case NO_BUTTON:
-            // Nothing to do here.
-            break;
-        case TOGGLE_TIMER:
-            timer.startStop();
-            break;
-        case CHANGE_TIMER:
-            timer.changeTime(buttonManager.getChange());
-            break;
-    }
+        /* We're only in pre-flight for ~5 seconds. */
+        if (interval > 3) {
+            preflight = false;
+            timer.start();
+            // Persist the new time to ROM.
+        }
 
-    // Get the time from the timer and display.
-    TimeSpan interval = timer.time();
-    int32_t totalseconds = interval.totalseconds();
-    if (totalseconds >= 0) {
-        uiManager.display(totalseconds);
+        // check the button state.
+        switch (buttonManager.getState()) {
+           case CHANGE_TIMER:
+                int change = buttonManager.getChange();
+                timers[direction] += change;
+                timer.changeTime(change);
+                break;
+        }
+
+
+        if (preflightDisplayState) {
+            Serial.println(timer.time().totalseconds());
+            uiManager.display(timer.time().totalseconds());
+        } else {
+            uiManager.clearDisplay();
+        }
+        preflightDisplayState = ! preflightDisplayState;
+    } else {
+
+        // check the button state.
+        switch (buttonManager.getState()) {
+            case NO_BUTTON:
+                // Nothing to do here.
+                break;
+            case TOGGLE_TIMER:
+                timer.startStop();
+                break;
+            case CHANGE_TIMER:
+                timer.changeTime(buttonManager.getChange());
+                break;
+        }
+
+        // Get the time from the timer and display.
+        TimeSpan interval = timer.time();
+        int32_t totalseconds = interval.totalseconds();
+        if (totalseconds >= 0) {
+            uiManager.display(totalseconds);
+        }
     }
 
     delay(250);

@@ -6,9 +6,11 @@ PomoTimer::PomoTimer(RTC_DS1307* clock) {
 }
 
 void PomoTimer::reset(int declaredResetValue) {
+    stop();
     resetValue = declaredResetValue;
 
     remaining = TimeSpan(resetValue);
+    time();
 }
 
 void PomoTimer::start() {
@@ -43,11 +45,10 @@ TimeSpan PomoTimer::time() {
         remaining = remaining - interval;
         if (remaining.totalseconds() <= 0) {
             running = false;
+            remaining = TimeSpan(0);
         } else {
             previous = current;
-            return remaining;
         }
     }
-
-    return TimeSpan(0);
+    return remaining;
 }
