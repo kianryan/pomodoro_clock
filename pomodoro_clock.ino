@@ -6,7 +6,7 @@
 #include "ButtonManager.h"
 #include "UiManager.h"
 
-RTC_DS1307 rtc;
+RTC_Millis rtc;
 // LedControl lc = LedControl(12, 11, 10, 1);
 
 int timers[] = {300, 10};
@@ -14,7 +14,7 @@ int timers[] = {300, 10};
 PomoTimer timer(&rtc);
 TiltSwitch tiltSwitch(2);
 ButtonManager buttonManager(3, 4, 5);
-UiManager uiManager(12, 11, 10, A3);
+UiManager uiManager(10, 11, 12, A3);
 
 int direction;
 
@@ -31,8 +31,7 @@ void setup() {
    Serial.begin(9600);
 
    // Setup the clock
-   rtc.begin();
-   rtc.adjust(DateTime(__DATE__, __TIME__));
+   rtc.begin(DateTime(F(__DATE__), F(__TIME__)));
 
    uiManager.startup();
    delay(1000);
@@ -110,7 +109,10 @@ void loop() {
 
         uiManager.display(totalseconds);
 
-        if (totalseconds <= 0) {
+        Serial.print("Seconds remaining: ");
+        Serial.println(totalseconds);
+
+        if (totalseconds <= (int32_t)0) {
             Serial.println("SOUND ALARM");
 
             /* Replace this with any buttons? */

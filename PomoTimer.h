@@ -9,10 +9,10 @@ class PomoTimer {
         TimeSpan remaining;
         DateTime previous;
         bool running;
-        RTC_DS1307* rtc;
+        RTC_Millis* rtc;
 
     public:
-        PomoTimer(RTC_DS1307* clock);
+        PomoTimer(RTC_Millis* clock);
 
         // Start tht timer counting down to the
         // reset resetValue.

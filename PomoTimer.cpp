@@ -1,7 +1,7 @@
 #include "PomoTimer.h"
 #include "RTClib.h"
 
-PomoTimer::PomoTimer(RTC_DS1307* clock) {
+PomoTimer::PomoTimer(RTC_Millis* clock) {
     rtc = clock;
 }
 
