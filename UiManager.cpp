@@ -26,7 +26,7 @@ void UiManager::clearDisplay() {
     lc->clearDisplay(0);
 }
 
-void UiManager::display(int totalSeconds) {
+void UiManager::display(int totalSeconds, int direction) {
 
     /* In here, we only have seconds...*/
 
@@ -37,15 +37,26 @@ void UiManager::display(int totalSeconds) {
     mins = mins/10;
 
     int tens = mins % 10;
-    lc->setDigit(0, 0, (byte)tens, false);
-    lc->setDigit(0, 1, (byte)ones, true);
+
+    if (direction == HIGH) {
+        lc->setDigit(0, 0, (byte)tens, false);
+        lc->setDigit(0, 1, (byte)ones, true);
+    } else {
+        lc->setInverseDigit(0, 3, (byte)tens, false);
+        lc->setInverseDigit(0, 2, (byte)ones, true);
+    }
 
     ones = secs % 10;
     secs = secs/10;
     tens = secs % 10;
 
-    lc->setDigit(0, 2, (byte)tens, false);
-    lc->setDigit(0, 3, (byte)ones, false);
+    if (direction == HIGH) {
+        lc->setDigit(0, 2, (byte)tens, false);
+        lc->setDigit(0, 3, (byte)ones, false);
+    } else {
+        lc->setInverseDigit(0, 1, (byte)tens, false);
+        lc->setInverseDigit(0, 0, (byte)ones, false);
+    }
 }
 
 void UiManager::alarm() {

@@ -83,7 +83,7 @@ void loop() {
 
         if (preflightDisplayState) {
             Serial.println(timer.time().totalseconds());
-            uiManager.display(timer.time().totalseconds());
+            uiManager.display(timer.time().totalseconds(), direction);
         } else {
             uiManager.clearDisplay();
         }
@@ -107,7 +107,7 @@ void loop() {
         TimeSpan interval = timer.time();
         int32_t totalseconds = interval.totalseconds();
 
-        uiManager.display(totalseconds);
+        uiManager.display(totalseconds, direction);
 
         Serial.print("Seconds remaining: ");
         Serial.println(totalseconds);

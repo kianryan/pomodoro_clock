@@ -18,7 +18,7 @@ class UiManager {
 
         void clearDisplay();
 
-        void display(int totalSeconds);
+        void display(int totalSeconds, int direction);
 
         void alarm();
 };
