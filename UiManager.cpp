@@ -26,17 +26,17 @@ void UiManager::clearDisplay() {
     lc->clearDisplay(0);
 }
 
-void UiManager::display(int totalSeconds, int direction) {
+void UiManager::display(unsigned long totalSeconds, int direction) {
 
     /* In here, we only have seconds...*/
 
-    int mins = totalSeconds / 60;
-    int secs = totalSeconds - (mins * 60);
+    unsigned long mins = totalSeconds / 60;
+    unsigned long secs = totalSeconds - (mins * 60);
 
-    int ones = mins % 10;
+    unsigned long ones = mins % 10;
     mins = mins/10;
 
-    int tens = mins % 10;
+    unsigned long tens = mins % 10;
 
     if (direction == HIGH) {
         lc->setDigit(0, 0, (byte)tens, false);

@@ -1,15 +1,14 @@
 #include "PomoTimer.h"
-#include "RTClib.h"
 
-PomoTimer::PomoTimer(RTC_Millis* clock) {
-    rtc = clock;
+PomoTimer::PomoTimer(MilliClock* rtc):
+    rtc { rtc } {
 }
 
 void PomoTimer::reset(int declaredResetValue) {
     stop();
     resetValue = declaredResetValue;
 
-    remaining = TimeSpan(resetValue);
+    remaining = (unsigned long)resetValue * 1000;
     time();
 }
 
@@ -28,7 +27,7 @@ void PomoTimer::startStop() {
 }
 
 void PomoTimer::changeTime(int seconds) {
-    remaining = remaining + TimeSpan(seconds);
+    remaining = remaining + (seconds * 1000);
 }
 
 // If the timer is within the boundaries
@@ -37,18 +36,18 @@ void PomoTimer::changeTime(int seconds) {
 TimeSpan PomoTimer::time() {
     if (running)
     {
-        DateTime current = rtc->now();
+        unsigned long current = rtc->now();
 
         // If still running, determine if we
         // should still be running.
-        TimeSpan interval = current - previous;
-        remaining = remaining - interval;
-        if (remaining.totalseconds() <= 0) {
+        unsigned long interval = current - previous;
+        if (interval >= remaining) {
             running = false;
-            remaining = TimeSpan(0);
+            remaining = 0;
         } else {
+            remaining = remaining - interval;
             previous = current;
         }
     }
-    return remaining;
+    return TimeSpan(remaining);
 }

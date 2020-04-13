@@ -1,18 +1,18 @@
 #ifndef PomoTimer_h
 #define PomoTimer_h
 
-#include "RTClib.h"
+#include "MilliClock.h"
 
 class PomoTimer {
     private:
+        MilliClock* rtc;
         int resetValue;
-        TimeSpan remaining;
-        DateTime previous;
         bool running;
-        RTC_Millis* rtc;
 
+        unsigned long remaining;
+        unsigned long previous;
     public:
-        PomoTimer(RTC_Millis* clock);
+        PomoTimer(MilliClock* clock);
 
         // Start tht timer counting down to the
         // reset resetValue.
@@ -34,8 +34,8 @@ class PomoTimer {
 
         // If the timer is within the boundaries
         // and still running, returns the current
-        // time remaining.  Otherwise, returns -1.
-        TimeSpan time();
+        // time remaining.
+       TimeSpan time();
 };
 
 #endif // PomoTimer.h
