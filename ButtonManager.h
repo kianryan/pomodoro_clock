@@ -17,7 +17,7 @@ class ButtonManager {
 
     public:
         // Declare up button and down buttons
-        ButtonManager(int upPin, int downPin, int lChange);
+        ButtonManager(MilliClock* rtc, int upPin, int downPin, int lChange);
 
         // Destructor
         ~ButtonManager();

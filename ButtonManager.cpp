@@ -1,8 +1,8 @@
 #include "ButtonManager.h"
 
-ButtonManager::ButtonManager(int upPin, int downPin, int lChange) {
-    upButton = new EasingButton(upPin, lChange);
-    downButton = new EasingButton(downPin, lChange);
+ButtonManager::ButtonManager(MilliClock* rtc, int upPin, int downPin, int lChange) {
+    upButton = new EasingButton(rtc, upPin, lChange);
+    downButton = new EasingButton(rtc, downPin, lChange);
 }
 
 ButtonManager::~ButtonManager() {
@@ -18,8 +18,8 @@ void ButtonManager::update() {
 int ButtonManager::getState() {
 
     int buttonState[2];
-    buttonState[0] = upButton->getState();
-    buttonState[1] = downButton->getState();
+    buttonState[0] = upButton->getSwitchState();
+    buttonState[1] = downButton->getSwitchState();
 
     if (buttonState[0] == HIGH && buttonState[1] == HIGH) {
         /* THIS IS A RESET STATE */
@@ -44,11 +44,11 @@ int ButtonManager::getState() {
 int ButtonManager::getChange() {
 
     int buttonState[2];
-    buttonState[0] = upButton->getState();
-    buttonState[1] = downButton->getState();
+    buttonState[0] = upButton->getSwitchState();
+    buttonState[1] = downButton->getSwitchState();
 
-    if (upButton->getState() != HIGH) return upButton->getChange();
-    if (downButton->getState() != HIGH) return downButton->getChange() * -1;
+    if (upButton->getSwitchState() != HIGH) return upButton->getChange();
+    if (downButton->getSwitchState() != HIGH) return downButton->getChange() * -1;
 
     return 0;
 }

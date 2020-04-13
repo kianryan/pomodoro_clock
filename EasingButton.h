@@ -1,45 +1,51 @@
 #ifndef EasingButton_h
 #define EasingButton_h
 
+#include "MilliClock.h"
+
 #if (ARDUINO >= 100)
 #include <Arduino.h>
 #else
 #include <WProgram.h>
 #endif
 
-#define REALLY_LOW 2
+const int EASING_OFF = 0; // Easing button is completely off.
+const int EASING_NO_CHANGE = 1; // Easing button says no change.
+const int EASING_SLOW_CHANGE = 2; // Easing button says low change value
+const int EASING_FAST_CHANGE = 3; // Easing button says fast change value
 
-// An easing button should remain "sticky" for a number
-// of cycles, before increasing until released.
-// We can measure in one of three states,
-// LOW, HIGH, REALLY_HIGH (2).
-
-// We're going to base this off the debounce code we
-// used for the tilt sensor.
+const unsigned long EASING_INTERVAL = 250;
+const unsigned long EASING_FASTSWITCH_THRESHOLD = 3000; // Fast switch at 3s
 
 
 class EasingButton {
 
     private:
+        MilliClock* rtc;
+
         int inputPin;
         int reading;
-        int previous = HIGH;
-        int switchstate;
+        int previousButton = HIGH;
+        int switchState;
+        int buttonState;
 
-        long time;
-        long fastswitch = 5000;
-
-        int longChange = 5;
+        unsigned long previous;
+        unsigned long held;
+        int longChange;
 
     public:
         // Pin to read from.
         // Held at pull up high.  lChange represents the
         // value to return for long held depresses.
-        EasingButton(int inputPin, int longChange);
+        EasingButton(MilliClock* rtc, int inputPin, int longChange);
 
         // Get the current switch state
-        // HIGH (off), LOW (on), REALLY_LOW (long held)
-        int getState();
+        // This is not the same as the button State.
+        int getSwitchState();
+
+        // Get the current button state.
+        // This is not the same as the switch State.
+        int getButtonState();
 
         // Return a numerical change representing
         // the amount to change a value for the given button

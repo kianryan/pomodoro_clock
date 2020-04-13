@@ -13,7 +13,7 @@ int timers[] = {300, 10};
 
 PomoTimer timer(&rtc);
 TiltSwitch tiltSwitch(2);
-ButtonManager buttonManager(3, 4, 5);
+ButtonManager buttonManager(&rtc, 3, 4, 5);
 UiManager uiManager(10, 11, 12, A3);
 Preflight preflight(&rtc, &timer);
 
