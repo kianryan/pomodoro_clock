@@ -50,22 +50,22 @@ void loop() {
 
     if (preflight.isRunning()) {
 
-       TimeSpan interval = preflight.time(); // get preflight time.
-       int32_t totalseconds = interval.totalseconds();
-
         /* Take button input, if button press, increase duration
            of preflight, and increase time displayed on clock. */
 
         // check the button state.
+        bool pause = false;
         switch (buttonManager.getState()) {
            case CHANGE_TIMER:
                 int change = buttonManager.getChange();
                 timers[direction] += change;
                 timer.changeTime(change);
-                Serial.println("Chainging preflight");
-                preflight.changeTime(PREFLIGHT_BLINK_INTERVAL);
+                pause = true;
                 break;
         }
+
+       TimeSpan interval = preflight.time(pause); // get preflight time.
+       int32_t totalseconds = interval.totalseconds();
 
         if (preflight.isDisplayOn()) {
             uiManager.display(timer.time().totalseconds(), direction);

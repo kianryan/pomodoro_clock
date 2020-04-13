@@ -14,7 +14,7 @@ const int EASING_NO_CHANGE = 1; // Easing button says no change.
 const int EASING_SLOW_CHANGE = 2; // Easing button says low change value
 const int EASING_FAST_CHANGE = 3; // Easing button says fast change value
 
-const unsigned long EASING_INTERVAL = 250;
+const unsigned long EASING_INTERVAL = 150;
 const unsigned long EASING_FASTSWITCH_THRESHOLD = 3000; // Fast switch at 3s
 
 

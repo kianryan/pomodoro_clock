@@ -34,13 +34,10 @@ class Preflight {
         void start(int declaredResetValue);
 
         // Change the preflight timer by the given number of milliseconds.
-        void changeTime(int milliseconds);
-
         // If the timer is within the boundaries
         // and still running, returns the current
         // time remaining.
-
-        TimeSpan time();
+        TimeSpan time(bool pause);
 
         // Returns if pre-flight is currently running.
         bool isRunning();

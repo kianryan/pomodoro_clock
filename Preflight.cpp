@@ -21,7 +21,7 @@ void Preflight::start(int declaredResetValue) {
     displayOn = false;
 }
 
-TimeSpan Preflight::time() {
+TimeSpan Preflight::time(bool pause) {
     if (running)
     {
         unsigned long current = rtc->now();
@@ -31,20 +31,21 @@ TimeSpan Preflight::time() {
         Serial.println(interval);
         Serial.print("Remaining: ");
         Serial.println(remaining);
+
         if (interval >= remaining) {
             running = false;
             remaining = 0;
             timer->start();
         } else {
-            remaining = remaining - interval;
+            if (!pause) {
+                // If we're not pausing,
+                // take the time off the interval.
+                remaining -= interval;
+            }
             previous = current;
         }
     }
     return TimeSpan(remaining);
-}
-
-void Preflight::changeTime(int milliseconds) {
-    remaining  = remaining + milliseconds;
 }
 
 bool Preflight::isRunning() {
