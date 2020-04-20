@@ -1,25 +1,25 @@
 #include "ButtonManager.h"
 
 ButtonManager::ButtonManager(MilliClock* rtc, int upPin, int downPin, int lChange) {
-    upButton = new EasingButton(rtc, upPin, lChange);
-    downButton = new EasingButton(rtc, downPin, lChange);
+    buttons[0] = new EasingButton(rtc, upPin, lChange);
+    buttons[1] = new EasingButton(rtc, downPin, lChange);
 }
 
 ButtonManager::~ButtonManager() {
-    delete upButton;
-    delete downButton;
+    delete buttons[0];
+    delete buttons[1];
 }
 
 void ButtonManager::update() {
-    upButton->update();
-    downButton->update();
+    buttons[0]->update();
+    buttons[1]->update();
 }
 
 int ButtonManager::getState() {
 
     int buttonState[2];
-    buttonState[0] = upButton->getSwitchState();
-    buttonState[1] = downButton->getSwitchState();
+    buttonState[0] = buttons[0]->getSwitchState();
+    buttonState[1] = buttons[1]->getSwitchState();
 
     if (buttonState[0] == HIGH && buttonState[1] == HIGH) {
         /* THIS IS A RESET STATE */
@@ -41,14 +41,20 @@ int ButtonManager::getState() {
     return NO_BUTTON;
 }
 
-int ButtonManager::getChange() {
+int ButtonManager::getChange(int direction) {
 
     int buttonState[2];
-    buttonState[0] = upButton->getSwitchState();
-    buttonState[1] = downButton->getSwitchState();
+    buttonState[0] = buttons[0]->getSwitchState();
+    buttonState[1] = buttons[1]->getSwitchState();
 
-    if (upButton->getSwitchState() != HIGH) return upButton->getChange();
-    if (downButton->getSwitchState() != HIGH) return downButton->getChange() * -1;
+    /* When returning change, take direction into account */
+    int flip = 1;
+    if (direction == HIGH) {
+        flip = -1;
+    }
+
+    if (buttons[0]->getSwitchState() != HIGH) return buttons[0]->getChange() * flip;
+    if (buttons[1]->getSwitchState() != HIGH) return buttons[1]->getChange() * -1 * flip;
 
     return 0;
 }

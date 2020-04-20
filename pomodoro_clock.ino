@@ -71,7 +71,7 @@ void loop() {
         bool pause = false;
         switch (buttonManager.getState()) {
            case CHANGE_TIMER:
-                int change = buttonManager.getChange();
+                int change = buttonManager.getChange(direction);
 
                 timers[direction] = timer.changeTime(change);
                 pause = true;
@@ -100,7 +100,7 @@ void loop() {
                 timer.startStop();
                 break;
             case CHANGE_TIMER:
-                timer.changeTime(buttonManager.getChange());
+                timer.changeTime(buttonManager.getChange(direction));
                 break;
         }
 

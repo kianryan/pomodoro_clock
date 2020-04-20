@@ -11,8 +11,9 @@ class ButtonManager {
 
     private:
 
-        EasingButton* upButton;
-        EasingButton* downButton;
+        EasingButton* buttons[2];
+        // EasingButton* upButton;
+        // EasingButton* downButton;
         bool toggleTimerFired;
 
     public:
@@ -29,7 +30,7 @@ class ButtonManager {
         int getState();
 
         // Return the current change
-        int getChange();
+        int getChange(int direction);
 };
 
 #endif // ButtonManager.h
