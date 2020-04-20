@@ -27,14 +27,15 @@ TimeSpan Preflight::time(bool pause) {
         unsigned long current = rtc->now();
 
         unsigned long interval = current - previous;
-        Serial.print("Inteval: ");
-        Serial.println(interval);
-        Serial.print("Remaining: ");
-        Serial.println(remaining);
+        // Serial.print("Inteval: ");
+        // Serial.println(interval);
+        // Serial.print("Remaining: ");
+        // Serial.println(remaining);
 
         if (interval >= remaining) {
             running = false;
             remaining = 0;
+
             timer->start();
         } else {
             if (!pause) {
