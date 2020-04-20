@@ -2,8 +2,8 @@
 
 
 
-UiManager::UiManager(int dataPin, int clkPin, int csPin, int piezoPin)
-     : piezoPin{piezoPin} {
+UiManager::UiManager(MilliClock* rtc, int dataPin, int clkPin, int csPin, int piezoPin)
+     : rtc{rtc}, piezoPin{piezoPin} {
      lc = new LedControl(dataPin, clkPin, csPin, piezoPin);
 }
 
@@ -61,11 +61,29 @@ void UiManager::display(unsigned long totalSeconds, int direction) {
     }
 }
 
+void UiManager::silenceAlarm() {
+    isSilenced = true;
+    noTone(piezoPin);
+}
+
+void UiManager::resetAlarm() {
+    isSilenced = false;
+    toggleTone = false;
+}
+
 void UiManager::alarm() {
 
-    /* Alarm will sound for three seconds, in 250ms bursts. */
-    if (toggleTone) {
-        tone(piezoPin, 262);
+    if (!isSilenced) {
+        unsigned long current = rtc-> now();
+        if (current - lastTone >= ALARM_INTERVAL) {
+            lastTone = current;
+            toggleTone = !toggleTone;
+        }
+
+        if (toggleTone) {
+            tone(piezoPin,65); // G2
+        } else {
+            noTone(piezoPin);
+        }
     }
-    toggleTone = ! toggleTone;
 }

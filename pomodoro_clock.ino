@@ -15,7 +15,7 @@ int timers[] = {0, 0};
 PomoTimer timer(&rtc);
 TiltSwitch tiltSwitch(2);
 ButtonManager buttonManager(&rtc, 3, 4, 5);
-UiManager uiManager(10, 11, 12, A3);
+UiManager uiManager(&rtc, 10, 11, 12, A3);
 Preflight preflight(&rtc, &timer);
 
 int direction;
@@ -82,6 +82,7 @@ void loop() {
        TimeSpan interval = preflight.time(pause); // get preflight time.
        if (interval.milliseconds() == 0) {        // update EEPROM with last set time.
            EEPROM.put((direction * sizeof(int)) + 1, timers[direction]);
+           uiManager.resetAlarm();
        }
 
         if (preflight.isDisplayOn()) {
@@ -92,7 +93,8 @@ void loop() {
     } else {
 
         // check the button state.
-        switch (buttonManager.getState()) {
+        int buttonState = buttonManager.getState();
+        switch (buttonState) {
             case NO_BUTTON:
                 // Nothing to do here.
                 break;
@@ -114,17 +116,11 @@ void loop() {
         Serial.println(totalseconds);
 
         /* Need to handle the cancelling code better. */
-        // if (totalseconds <= (int32_t)0) {
-        //     Serial.println("SOUND ALARM");
-
-        //     /* Replace this with any buttons? */
-        //     if (buttonManager.getState() != NO_BUTTON) {
-        //         alarmSilenced = true;
-        //     }
-
-        //     if (!alarmSilenced) {
-        //         uiManager.alarm();
-        //     }
-        // }
+        if (totalseconds <= (int32_t)0) {
+            if (buttonState != NO_BUTTON) {
+                uiManager.silenceAlarm();
+            }
+            uiManager.alarm();
+       }
    }
 }
