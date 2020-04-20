@@ -12,3 +12,7 @@ unsigned long TimeSpan::totalseconds() {
     return _milliseconds / 1000;
 }
 
+unsigned long TimeSpan::milliseconds() {
+    return _milliseconds;
+}
+

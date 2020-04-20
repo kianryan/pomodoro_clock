@@ -27,6 +27,7 @@ class TimeSpan {
     public:
         TimeSpan(unsigned long milliseconds = 0);
         unsigned long totalseconds();
+        unsigned long milliseconds();
 };
 
 #endif // MilliClock_h

@@ -6,10 +6,11 @@
 #include "ButtonManager.h"
 #include "UiManager.h"
 #include "Preflight.h"
+#include <EEPROM.h>
 
 MilliClock rtc;
 
-int timers[] = {100, 10};
+int timers[] = {0, 0};
 
 PomoTimer timer(&rtc);
 TiltSwitch tiltSwitch(2);
@@ -30,6 +31,19 @@ void setup() {
 
    uiManager.startup();
    delay(1000);
+
+   /* Initialize EEPROM, or timers from EEPROM */
+   byte init = EEPROM.read(0);
+   if (init == 255) {
+       timers[0] = 1200;
+       timers[1] = 300;
+       EEPROM.put(1, timers[0]);
+       EEPROM.put(sizeof(int) + 1, timers[1]);
+       EEPROM.put(0, 0);
+   } else {
+       EEPROM.get(1, timers[0]);
+       EEPROM.get(sizeof(int) + 1, timers[1]);
+   }
 
    direction = tiltSwitch.getState(); // Get an inital direction.
    preflight.start(timers[direction]);
@@ -64,8 +78,11 @@ void loop() {
                 break;
         }
 
+
        TimeSpan interval = preflight.time(pause); // get preflight time.
-       int32_t totalseconds = interval.totalseconds();
+       if (interval.milliseconds() == 0) {        // update EEPROM with last set time.
+           EEPROM.put((direction * sizeof(int)) + 1, timers[direction]);
+       }
 
         if (preflight.isDisplayOn()) {
             uiManager.display(timer.time().totalseconds(), direction);
