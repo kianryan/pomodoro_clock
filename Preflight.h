@@ -10,7 +10,7 @@
 #include <WProgram.h>
 #endif
 
-const int PREFLIGHT_RUNTIME = 3;          // PREFLIGHT RUNTIME, SECONDS.
+const int PREFLIGHT_RUNTIME = 10;          // PREFLIGHT RUNTIME, SECONDS.
 const int PREFLIGHT_BLINK_INTERVAL = 300; // PREFLIGHT BLINK TIME, MILLISECONDS.
 
 class Preflight {

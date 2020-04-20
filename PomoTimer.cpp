@@ -26,8 +26,19 @@ void PomoTimer::startStop() {
     running = !running;
 }
 
-void PomoTimer::changeTime(int seconds) {
-    remaining = remaining + (seconds * 1000);
+int PomoTimer::changeTime(int seconds) {
+
+    int change = seconds * 1000;
+
+   if (change < 0 && remaining < abs(change)) {
+        remaining = MIN_TIMER_VALUE_SEC;
+    } else if ((remaining + change) > (MAX_TIMER_VALUE_SEC * 1000)) {
+        remaining = MAX_TIMER_VALUE_SEC * 1000;
+    } else {
+        remaining = remaining + change;
+    }
+
+    return remaining / 1000;
 }
 
 // If the timer is within the boundaries

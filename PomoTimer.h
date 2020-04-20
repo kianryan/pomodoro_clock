@@ -3,6 +3,9 @@
 
 #include "MilliClock.h"
 
+const unsigned long MIN_TIMER_VALUE_SEC = 0;
+const unsigned long MAX_TIMER_VALUE_SEC = 5999;
+
 class PomoTimer {
     private:
         MilliClock* rtc;
@@ -30,7 +33,8 @@ class PomoTimer {
         void startStop();
 
         // Change the timer by the given number of seconds.
-        void changeTime(int changeSeconds);
+        // Returns the current seconds remaining on clock.
+        int changeTime(int changeSeconds);
 
         // If the timer is within the boundaries
         // and still running, returns the current

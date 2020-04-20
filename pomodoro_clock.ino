@@ -9,7 +9,7 @@
 
 MilliClock rtc;
 
-int timers[] = {300, 10};
+int timers[] = {100, 10};
 
 PomoTimer timer(&rtc);
 TiltSwitch tiltSwitch(2);
@@ -58,8 +58,8 @@ void loop() {
         switch (buttonManager.getState()) {
            case CHANGE_TIMER:
                 int change = buttonManager.getChange();
-                timers[direction] += change;
-                timer.changeTime(change);
+
+                timers[direction] = timer.changeTime(change);
                 pause = true;
                 break;
         }
