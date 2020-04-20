@@ -32,6 +32,9 @@ class PomoTimer {
         // Toggle the current running state.
         void startStop();
 
+        // Return if the timer is current running.
+        bool isRunning();
+
         // Change the timer by the given number of seconds.
         // Returns the current seconds remaining on clock.
         int changeTime(int changeSeconds);
@@ -39,7 +42,8 @@ class PomoTimer {
         // If the timer is within the boundaries
         // and still running, returns the current
         // time remaining.
-       TimeSpan time();
+        TimeSpan time();
+
 };
 
 #endif // PomoTimer.h

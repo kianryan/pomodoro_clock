@@ -7,12 +7,6 @@ Preflight::Preflight(MilliClock* rtc, PomoTimer* timer)
 void Preflight::start(int declaredResetValue) {
     remaining = PREFLIGHT_RUNTIME * 1000; // sec to ms
 
-    Serial.println("Runtime:");
-    Serial.println(remaining);
-    delay(1000);
-
-    Serial.print("Declared timer value");
-    Serial.println(declaredResetValue);
     timer->reset(declaredResetValue); // Need access to timers
     running = true;
     previous = rtc->now();
@@ -27,10 +21,6 @@ TimeSpan Preflight::time(bool pause) {
         unsigned long current = rtc->now();
 
         unsigned long interval = current - previous;
-        // Serial.print("Inteval: ");
-        // Serial.println(interval);
-        // Serial.print("Remaining: ");
-        // Serial.println(remaining);
 
         if (interval >= remaining) {
             running = false;

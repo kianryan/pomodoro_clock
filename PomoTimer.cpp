@@ -26,6 +26,10 @@ void PomoTimer::startStop() {
     running = !running;
 }
 
+bool PomoTimer::isRunning() {
+    return running;
+}
+
 int PomoTimer::changeTime(int seconds) {
 
     int change = seconds * 1000;

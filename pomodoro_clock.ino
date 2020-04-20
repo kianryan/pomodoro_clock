@@ -26,8 +26,7 @@ bool alarmSilenced;
 void setup() {
 
    // Serial for debugging
-   Serial.begin(9600);
-
+//    Serial.begin(9600);
 
    uiManager.startup();
    delay(1000);
@@ -78,7 +77,6 @@ void loop() {
                 break;
         }
 
-
        TimeSpan interval = preflight.time(pause); // get preflight time.
        if (interval.milliseconds() == 0) {        // update EEPROM with last set time.
            EEPROM.put((direction * sizeof(int)) + 1, timers[direction]);
@@ -108,19 +106,23 @@ void loop() {
 
         // Get the time from the timer and display.
         TimeSpan interval = timer.time();
-        int32_t totalseconds = interval.totalseconds();
+        unsigned long millis = interval.milliseconds();
 
-        uiManager.display(totalseconds, direction);
-
-        Serial.print("Seconds remaining: ");
-        Serial.println(totalseconds);
-
-        /* Need to handle the cancelling code better. */
-        if (totalseconds <= (int32_t)0) {
+        // If the timer is not currently running,
+        // and there's time on the clock, start the timer.
+        if (millis > 0 && ! timer.isRunning()) {
+            uiManager.resetAlarm();
+            timer.start();
+        }
+        // If there's no time on the clock, alarm.
+        // If the button is depressed, silence.
+        else if (millis == 0) {
             if (buttonState != NO_BUTTON) {
                 uiManager.silenceAlarm();
             }
             uiManager.alarm();
-       }
+        }
+
+        uiManager.display(interval.totalseconds(), direction);
    }
 }
