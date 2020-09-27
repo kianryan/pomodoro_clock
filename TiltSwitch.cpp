@@ -8,8 +8,8 @@ TiltSwitch::TiltSwitch(int switchPin)
   switchstate = digitalRead(switchPin); // grab an initial state
 }
 
-int TiltSwitch::getState() {
-    return switchstate;
+bool TiltSwitch::getState() {
+    return (! switchstate);
 }
 
 void TiltSwitch::update() {

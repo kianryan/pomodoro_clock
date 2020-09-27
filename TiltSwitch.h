@@ -25,7 +25,7 @@ class TiltSwitch {
 
         // Return if the tilt sensor
         // is currently pointing up.
-        int getState();
+        bool getState();
 
         // Update state of tilt switch.
         void update();
