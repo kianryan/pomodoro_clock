@@ -4,7 +4,7 @@
 
 UiManager::UiManager(MilliClock* rtc, int dataPin, int clkPin, int csPin, int piezoPin)
      : rtc{rtc}, piezoPin{piezoPin} {
-     lc = new LedControl(dataPin, clkPin, csPin, piezoPin);
+     lc = new LedControl(dataPin, clkPin, csPin, 1);
 }
 
 UiManager::~UiManager() {
@@ -20,44 +20,47 @@ void UiManager::startup() {
    // debug
    lc->setDigit(0, 0, 8, true);
    lc->setDigit(0, 1, 8, true);
-   lc->setDigit(0, 2, 8, true);
-   lc->setDigit(0, 3, 8, true);
+   lc->setDigit(0, 2, 8, false);
+   lc->setDigit(0, 3, 8, false);
 }
 
 void UiManager::clearDisplay() {
     lc->clearDisplay(0);
 }
 
-void UiManager::display(unsigned long totalSeconds, int direction) {
+void UiManager::display(unsigned long totalSeconds, bool direction) {
 
     /* In here, we only have seconds...*/
+
+    byte digits[] = {0, 0, 0, 0};
 
     unsigned long mins = totalSeconds / 60;
     unsigned long secs = totalSeconds - (mins * 60);
 
-    unsigned long ones = mins % 10;
-    mins = mins/10;
+    digits[0] = (mins / 10) % 10;
+    digits[1] = mins % 10;
 
-    unsigned long tens = mins % 10;
+    // if (direction) {
+    //     lc->setDigit(0, 0, (byte)tens, false);
+    //     lc->setDigit(0, 1, (byte)ones, true);
+    // } else {
+    //     lc->setInverseDigit(0, 3, (byte)tens, false);
+    //     lc->setInverseDigit(0, 2, (byte)ones, true);
+    // }
 
-    if (direction == HIGH) {
-        lc->setDigit(0, 0, (byte)tens, false);
-        lc->setDigit(0, 1, (byte)ones, true);
+    digits[2] = (secs / 10) % 10;
+    digits[3] = secs % 10;
+
+    if (direction) {
+        lc->setDigit(0, 0, digits[0], false);
+        lc->setDigit(0, 1, digits[1], true);
+        lc->setInverseDigit(0, 2, digits[2], false);
+        lc->setInverseDigit(0, 3, digits[3], false);
     } else {
-        lc->setInverseDigit(0, 3, (byte)tens, false);
-        lc->setInverseDigit(0, 2, (byte)ones, true);
-    }
-
-    ones = secs % 10;
-    secs = secs/10;
-    tens = secs % 10;
-
-    if (direction == HIGH) {
-        lc->setDigit(0, 2, (byte)tens, false);
-        lc->setDigit(0, 3, (byte)ones, false);
-    } else {
-        lc->setInverseDigit(0, 1, (byte)tens, false);
-        lc->setInverseDigit(0, 0, (byte)ones, false);
+        lc->setDigit(0, 3, digits[0], false);
+        lc->setDigit(0, 2, digits[1], true);
+        lc->setInverseDigit(0, 1, digits[2], false);
+        lc->setInverseDigit(0, 0, digits[3], false);
     }
 }
 
