@@ -13,12 +13,12 @@ MilliClock rtc;
 int timers[] = {0, 0};
 
 PomoTimer timer(&rtc);
-TiltSwitch tiltSwitch(2);
-ButtonManager buttonManager(&rtc, 3, 4, 5);
-UiManager uiManager(&rtc, 10, 11, 12, A3);
+TiltSwitch tiltSwitch(4);
+ButtonManager buttonManager(&rtc, 6, 7, 5);
+UiManager uiManager(&rtc, 1, 3, 2, 0);
 Preflight preflight(&rtc, &timer);
 
-int direction;
+bool direction;
 
 bool alarmSilenced;
 
@@ -33,16 +33,16 @@ void setup() {
 
    /* Initialize EEPROM, or timers from EEPROM */
    byte init = EEPROM.read(0);
-   if (init == 255) {
+//    if (init == 255) {
        timers[0] = 1200;
        timers[1] = 300;
-       EEPROM.put(1, timers[0]);
-       EEPROM.put(sizeof(int) + 1, timers[1]);
-       EEPROM.put(0, 0);
-   } else {
-       EEPROM.get(1, timers[0]);
-       EEPROM.get(sizeof(int) + 1, timers[1]);
-   }
+    //    EEPROM.put(1, timers[0]);
+    //    EEPROM.put(sizeof(int) + 1, timers[1]);
+    //    EEPROM.put(0, 0);
+//    } else {
+//        EEPROM.get(1, timers[0]);
+//        EEPROM.get(sizeof(int) + 1, timers[1]);
+//    }
 
    direction = tiltSwitch.getState(); // Get an inital direction.
    preflight.start(timers[direction]);
@@ -54,7 +54,7 @@ void loop() {
     buttonManager.update();
 
     // On a change in tilt state,
-    int newDirection = tiltSwitch.getState();
+    bool newDirection = tiltSwitch.getState();
     if (direction != newDirection) {
         direction = newDirection;
 
