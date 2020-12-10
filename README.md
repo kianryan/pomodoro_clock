@@ -27,3 +27,7 @@ Compiles, generates build asset in /build and uploads via ASP.
 ```
 arduino-cli compile --fqbn ATTinyCore:avr:attinyx4; arduino-cli upload --fqbn ATTinyCore:avr:attinyx4 -P usbasp
 ```
+
+## Board and Schematics
+
+Eagle designs are available in /eagle
